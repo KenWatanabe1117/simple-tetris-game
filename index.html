@@ -9,11 +9,11 @@
             font-family: Arial, sans-serif;
             background-color: #f0f0f0;
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            justify-content: center;
             padding: 10px;
             margin: 0;
             touch-action: manipulation;
+            min-height: 100vh;
         }
         
         .game-container {
@@ -25,10 +25,10 @@
         }
         
         #game-board {
-            width: 300px;
-            height: 600px;
+            width: 250px;
+            height: 400px;
             max-width: 100%;
-            max-height: 70vh;
+            max-height: 50vh;
             background-color: #111;
             position: relative;
             border: 2px solid #333;
@@ -40,23 +40,27 @@
             height: 100%;
         }
         
+        .dashboard {
+            display: flex;
+            width: 100%;
+            max-width: 500px;
+            margin-top: 5px;
+        }
+        
         .info-panel {
             display: flex;
             flex-wrap: wrap;
-            justify-content: space-between;
-            width: 100%;
-            max-width: 500px;
-            margin-top: 10px;
-            gap: 10px;
+            gap: 5px;
+            flex: 3;
         }
         
         .score-container, .next-piece, .controls {
             background-color: white;
-            padding: 10px;
+            padding: 8px;
             border-radius: 5px;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
             flex: 1;
-            min-width: 120px;
+            min-width: 80px;
         }
         
         .next-piece {
@@ -71,39 +75,42 @@
         
         h1 {
             color: #333;
-            margin: 10px 0;
+            margin: 5px 0;
+            font-size: 24px;
         }
         
         h2 {
-            margin: 0 0 10px 0;
-            font-size: 18px;
+            margin: 0 0 5px 0;
+            font-size: 16px;
             color: #333;
         }
         
         .score-container div {
-            margin-bottom: 5px;
+            margin-bottom: 3px;
+            font-size: 14px;
         }
         
         .controls ul {
             margin: 0;
-            padding-left: 20px;
+            padding-left: 15px;
+            font-size: 14px;
         }
         
         .controls li {
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
         
         button {
             background-color: #4CAF50;
             color: white;
             border: none;
-            padding: 10px 15px;
+            padding: 8px 12px;
             text-align: center;
             text-decoration: none;
-            font-size: 16px;
+            font-size: 14px;
             cursor: pointer;
             border-radius: 4px;
-            margin-top: 10px;
+            margin-top: 5px;
             transition: background-color 0.3s;
         }
         
@@ -130,24 +137,33 @@
             margin-top: 15px;
         }
         
-        /* Mobile Touch Controls */
+        /* Touch Controls */
         .touch-controls {
-            display: none;
+            display: flex;
+            justify-content: space-between;
             width: 100%;
             max-width: 500px;
-            margin-top: 20px;
+            margin-top: 10px;
+            flex: 2;
         }
         
-        .touch-controls-row {
+        .touch-left, .touch-right {
             display: flex;
+            flex-direction: column;
             justify-content: center;
-            margin-bottom: 10px;
-            gap: 10px;
+            gap: 5px;
+        }
+        
+        .touch-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
         }
         
         .touch-btn {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             background-color: rgba(255, 255, 255, 0.8);
             border: 2px solid #333;
             border-radius: 50%;
@@ -160,42 +176,49 @@
         }
         
         .touch-btn svg {
-            width: 30px;
-            height: 30px;
+            width: 25px;
+            height: 25px;
             fill: #333;
         }
         
         /* Responsive layout */
         @media (max-width: 600px) {
-            .game-container {
-                flex-direction: column;
-            }
-            
             #game-board {
-                width: 270px; /* Slightly smaller for mobile */
-                height: 540px;
+                width: 200px;
+                height: 320px;
             }
             
-            .touch-controls {
-                display: block;
+            .dashboard {
+                flex-direction: row;
             }
             
             .keyboard-controls {
                 display: none;
             }
             
-            .info-panel {
-                flex-direction: row;
+            .touch-btn {
+                width: 45px;
+                height: 45px;
+            }
+            
+            .touch-btn svg {
+                width: 22px;
+                height: 22px;
+            }
+            
+            .score-container button {
+                padding: 5px 8px;
+                font-size: 12px;
             }
         }
     </style>
 </head>
 <body>
-    <h1>Tetris</h1>
-    
     <div class="game-container">
+        <h1>Tetris</h1>
+        
         <div id="game-board">
-            <canvas id="board" width="300" height="600"></canvas>
+            <canvas id="board" width="250" height="400"></canvas>
             <div id="game-over">
                 <h2>Game Over!</h2>
                 <p id="final-score">Your score: 0</p>
@@ -203,64 +226,59 @@
             </div>
         </div>
         
-        <div class="info-panel">
-            <div class="score-container">
-                <h2>Score</h2>
-                <div>Score: <span id="score">0</span></div>
-                <div>Lines: <span id="lines">0</span></div>
-                <div>Level: <span id="level">1</span></div>
-                <button id="start-button">Start Game</button>
-                <button id="pause-button">Pause</button>
+        <div class="dashboard">
+            <div class="info-panel">
+                <div class="score-container">
+                    <h2>Score</h2>
+                    <div>Score: <span id="score">0</span></div>
+                    <div>Lines: <span id="lines">0</span></div>
+                    <div>Level: <span id="level">1</span></div>
+                    <button id="start-button">Start</button>
+                    <button id="pause-button">Pause</button>
+                </div>
+                
+                <div class="next-piece">
+                    <h2>Next</h2>
+                    <canvas id="next-piece-canvas" width="80" height="60"></canvas>
+                </div>
             </div>
             
-            <div class="next-piece">
-                <h2>Next Piece</h2>
-                <canvas id="next-piece-canvas" width="120" height="80"></canvas>
-            </div>
-            
-            <div class="controls keyboard-controls">
-                <h2>Controls</h2>
-                <ul>
-                    <li>←/→: Move</li>
-                    <li>↑: Rotate</li>
-                    <li>↓: Soft Drop</li>
-                    <li>Space: Hard Drop</li>
-                    <li>P: Pause</li>
-                </ul>
-            </div>
-        </div>
-        
-        <!-- Touch Controls for Mobile -->
-        <div class="touch-controls">
-            <div class="touch-controls-row">
-                <div id="rotate-btn" class="touch-btn">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M18.4 10.6C16.55 8.99 14.15 8 11.5 8c-4.65 0-8.58 3.03-9.96 7.22L3.9 16c1.05-3.19 4.05-5.5 7.6-5.5 1.95 0 3.73.72 5.12 1.88L13 16h9V7l-3.6 3.6z"/>
-                    </svg>
+            <!-- Touch Controls for Mobile -->
+            <div class="touch-controls">
+                <div class="touch-left">
+                    <div id="left-btn" class="touch-btn">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/>
+                        </svg>
+                    </div>
                 </div>
-            </div>
-            <div class="touch-controls-row">
-                <div id="left-btn" class="touch-btn">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/>
-                    </svg>
+                
+                <div class="touch-center">
+                    <div id="rotate-btn" class="touch-btn">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M18.4 10.6C16.55 8.99 14.15 8 11.5 8c-4.65 0-8.58 3.03-9.96 7.22L3.9 16c1.05-3.19 4.05-5.5 7.6-5.5 1.95 0 3.73.72 5.12 1.88L13 16h9V7l-3.6 3.6z"/>
+                        </svg>
+                    </div>
+                    
+                    <div id="down-btn" class="touch-btn">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+                        </svg>
+                    </div>
                 </div>
-                <div id="down-btn" class="touch-btn">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
-                    </svg>
-                </div>
-                <div id="right-btn" class="touch-btn">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
-                    </svg>
-                </div>
-            </div>
-            <div class="touch-controls-row">
-                <div id="drop-btn" class="touch-btn">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M16 13h-3V3h-2v10H8l4 4 4-4z M4 19v2h16v-2H4z"/>
-                    </svg>
+                
+                <div class="touch-right">
+                    <div id="right-btn" class="touch-btn">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                        </svg>
+                    </div>
+                    
+                    <div id="drop-btn" class="touch-btn">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M16 13h-3V3h-2v10H8l4 4 4-4z M4 19v2h16v-2H4z"/>
+                        </svg>
+                    </div>
                 </div>
             </div>
         </div>
@@ -275,9 +293,9 @@
             const nextPieceCtx = nextPieceCanvas.getContext('2d');
             
             // Game constants
-            let BLOCK_SIZE = 30;
+            let BLOCK_SIZE = 25;
             const BOARD_WIDTH = 10;
-            const BOARD_HEIGHT = 20;
+            const BOARD_HEIGHT = 16; // Reduced height
             const COLORS = [
                 null,
                 '#FF0D72', // I
@@ -434,7 +452,7 @@
                 generateNextPiece();
                 playerReset();
                 gameOverElement.style.display = 'none';
-                startButton.innerText = 'Restart Game';
+                startButton.innerText = 'Restart';
                 pauseButton.innerText = 'Pause';
                 if (!requestId) {
                     update();
@@ -486,7 +504,7 @@
                 nextPieceCtx.fillRect(0, 0, nextPieceCanvas.width, nextPieceCanvas.height);
                 
                 if (nextPiece) {
-                    const blockSize = 20; // Smaller block size for the preview
+                    const blockSize = 15; // Smaller block size for the preview
                     
                     // Center the piece
                     const offset = {
@@ -682,7 +700,6 @@
                     dropDistance++;
                 }
                 if (dropDistance > 0) {
-                    // 衝突直前の有効な位置に戻す
                     player.pos.y--;
                 }
                 merge();
@@ -690,53 +707,48 @@
                 sweepRows();
                 updateScore();
             }
-
             
-            // 先頭でスペースキーが押されているかどうかを管理するフラグ
-let spaceKeyPressed = false;
+            let spaceKeyPressed = false;
 
-function handleKeyPress(e) {
-    if (gameOver) return;
+            function handleKeyPress(e) {
+                if (gameOver) return;
 
-    // スペースキーの場合、連続発火を防ぐためフラグをチェックする
-    if (e.key === ' ') {
-        e.preventDefault(); // ブラウザのデフォルト動作を防ぐ
-        if (spaceKeyPressed) return; // 既に押されている場合は何もしない
-        spaceKeyPressed = true;
-        hardDrop();
-        return;
-    }
+                if (e.key === ' ') {
+                    e.preventDefault();
+                    if (spaceKeyPressed) return;
+                    spaceKeyPressed = true;
+                    hardDrop();
+                    return;
+                }
 
-    if (e.key === 'p' || e.key === 'P') {
-        togglePause();
-        return;
-    }
+                if (e.key === 'p' || e.key === 'P') {
+                    togglePause();
+                    return;
+                }
 
-    if (isPaused) return;
+                if (isPaused) return;
 
-    switch (e.key) {
-        case 'ArrowLeft':
-            playerMove(-1);
-            break;
-        case 'ArrowRight':
-            playerMove(1);
-            break;
-        case 'ArrowDown':
-            playerDrop();
-            break;
-        case 'ArrowUp':
-            playerRotate();
-            break;
-    }
-}
+                switch (e.key) {
+                    case 'ArrowLeft':
+                        playerMove(-1);
+                        break;
+                    case 'ArrowRight':
+                        playerMove(1);
+                        break;
+                    case 'ArrowDown':
+                        playerDrop();
+                        break;
+                    case 'ArrowUp':
+                        playerRotate();
+                        break;
+                }
+            }
 
-// キーが離されたときに、スペースキー用のフラグをリセットする
-document.addEventListener('keyup', (e) => {
-    if (e.key === ' ') {
-        spaceKeyPressed = false;
-    }
-});
-
+            document.addEventListener('keyup', (e) => {
+                if (e.key === ' ') {
+                    spaceKeyPressed = false;
+                }
+            });
             
             function togglePause() {
                 isPaused = !isPaused;
